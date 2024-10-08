@@ -1,176 +1,106 @@
-<!doctype html>
-<html lang="en">
+<x-guest-layout>
+    <head> @vite(['resources/css/app.css', 'resources/js/app.js']) </head>
+    <x-auth-card>
+        <!-- Session Status -->
+        <x-auth-session-status class="mb-4" :status="session('status')" />
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Login &rsaquo; Werehouse BPBD | Kabupaten Jember</title>
+        <!-- Validation Errors -->
+        <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-    <link rel="shortcut icon" href="{{ asset('landingpages') }}/assets/images/logo/logobpbd1.png" type="image/png" />
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
 
-    <link rel="shortcut icon" href="{{ asset('tloginjadi') }}/assets/images/fav.jpg">
-    <link rel="stylesheet" href="{{ asset('tloginjadi') }}/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ asset('tloginjadi') }}/assets/css/fontawsom-all.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ asset('tloginjadi') }}/assets/css/style.css" />
+            <div class="grid gap-6">
+                <!-- Email Address -->
+                <div class="space-y-2">
+                    <x-form.label
+                        for="email"
+                        :value="__('Email')"
+                    />
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <x-form.input-with-icon-wrapper>
+                        <x-slot name="icon">
+                            <x-heroicon-o-mail aria-hidden="true" class="w-5 h-5" />
+                        </x-slot>
 
-</head>
-<style>
-    body {
-        background-image: url('{{ asset("tloginjadi") }}/assets/images/abstrak1.jpg');
-        background-size: cover;
-        background-position: center, center;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-    }
-
-    .container-fluid {
-        padding-top: 90px;
-        text-align: center;
-    }
-
-    @media screen and (max-width: 768px) {
-        .container-fluid {
-            padding-top: 50px;
-        }
-    }
-
-    .login-info {
-        margin-top: 20px;
-    }
-
-    @media screen and (max-width: 768px) {
-        .login-info {
-            margin-top: 40px;
-        }
-    }
-</style>
-<style>
-    body {
-        background-image: url('{{ asset("tloginjadi") }}/assets/images/abstrak1.jpg');
-        background-size: cover;
-        background-position: center, center;
-    }
-</style>
-
-<body>
-    <div class="container-fluid ">
-        <div class="container ">
-            <div class="row cdvfdfd">
-                <div class="col-lg-10 col-md-12 login-box">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 log-det">
-                            <div class="small-logo">
-                                <img src="{{ asset('tloginjadi') }}/assets/images/logo1login.svg" alt="Logo">
-                            </div>
-                            <p class="dfmn">Login Administrator</p>
-
-                            <div class="text-box-cont">
-                                <form method="POST" action="{{ route('login') }}">
-                                    @csrf
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1"><i
-                                                    class="fas fa-user"></i></span>
-                                        </div>
-                                        <input type="email" class="form-control" name="email" placeholder="Email"
-                                            aria-label="Email" aria-describedby="basic-addon1">
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1"><i
-                                                    class="fas fa-lock"></i></span>
-                                        </div>
-                                        <input type="password" class="form-control" name="password"
-                                            placeholder="Password" aria-label="Password"
-                                            aria-describedby="basic-addon1">
-                                    </div>
-                                    <div class="input-group center">
-                                        <button class="btn btn-danger"
-                                            style="background-color: rgb(110, 110, 255); border-color: rgb(110, 110, 252);">Login</button>
-                                    </div>
-                                    <div class="row">
-                                        <p class="forget-p">Werehouse | BPBD</span></p>
-                                    </div>
-                                    <div class="row">
-                                        <p class="small-info"></p>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        @if(session('status') || $errors->any())
-                            <script>
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 9000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                                    }
-                                });
-
-                                @if(session('status'))
-                                    Toast.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil',
-                                        text: '{{ session('status') }}'
-                                    });
-                                @elseif($errors->any())
-                                    @if($errors->has('email') || $errors->has('password'))
-                                        Toast.fire({
-                                            icon: 'error',
-                                            title: 'Login Gagal!',
-                                            text: 'Email atau kata sandi yang Anda masukkan salah !'
-                                        });
-                                    @else
-                                        Toast.fire({
-                                            icon: 'error',
-                                            title: 'Gagal!',
-                                            text: '{{ $errors->first() }}'
-                                        });
-                                    @endif
-                                @endif
-                            </script>
-                        @endif
-
-                        <div class="col-lg-6 col-md-6 box-de">
-                            <div class="inn-cover">
-                                <div class="ditk-inf">
-                                    <div class="small-logo">
-                                        <img src="{{ asset('tloginjadi') }}/assets/images/logo2login.svg" alt="Logo">
-                                    </div>
-                                    <h2 class="w-100">Lupa Password? </h2>
-                                    <p>Jika anda lupa password, Silahkan tekan tombol dibawah ini !</p>
-                                    <a href="{{ route('password.request') }}">
-                                        <button type="button" class="btn btn-outline-light">Forgot Password</button>
-                                    </a>
-                                </div>
-                                <div class="foter-credit">
-                                    <a href="https://smarteyeapps.com/"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <x-form.input
+                            withicon
+                            id="email"
+                            class="block w-full"
+                            type="email"
+                            name="email"
+                            :value="old('email')"
+                            placeholder="{{ __('Email') }}"
+                            required
+                            autofocus
+                        />
+                    </x-form.input-with-icon-wrapper>
                 </div>
+
+                <!-- Password -->
+                <div class="space-y-2">
+                    <x-form.label
+                        for="password"
+                        :value="__('Password')"
+                    />
+
+                    <x-form.input-with-icon-wrapper>
+                        <x-slot name="icon">
+                            <x-heroicon-o-lock-closed aria-hidden="true" class="w-5 h-5" />
+                        </x-slot>
+
+                        <x-form.input
+                            withicon
+                            id="password"
+                            class="block w-full"
+                            type="password"
+                            name="password"
+                            required
+                            autocomplete="current-password"
+                            placeholder="{{ __('Password') }}"
+                        />
+                    </x-form.input-with-icon-wrapper>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center justify-between">
+                    <label for="remember_me" class="inline-flex items-center">
+                        <input
+                            id="remember_me"
+                            type="checkbox"
+                            class="text-purple-500 border-gray-300 rounded focus:border-purple-300 focus:ring focus:ring-purple-500 dark:border-gray-600 dark:bg-dark-eval-1 dark:focus:ring-offset-dark-eval-1"
+                            name="remember"
+                        >
+
+                        <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                            {{ __('Remember me') }}
+                        </span>
+                    </label>
+
+                    @if (Route::has('password.request'))
+                        <a class="text-sm text-blue-500 hover:underline" href="{{ route('password.request') }}">
+                            {{ __('Forgot your password?') }}
+                        </a>
+                    @endif
+                </div>
+
+                <div>
+                    <x-button class="justify-center w-full gap-2">
+                        <x-heroicon-o-login class="w-6 h-6" aria-hidden="true" />
+
+                        <span>{{ __('Log in') }}</span>
+                    </x-button>
+                </div>
+
+                @if (Route::has('register'))
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        {{ __('Don’t have an account?') }}
+                        <a href="{{ route('register') }}" class="text-blue-500 hover:underline">
+                            {{ __('Register') }}
+                        </a>
+                    </p>
+                @endif
             </div>
-            <div class="text-center">
-                <p style="font-size: 15px; font-family: 'Merriweather', serif; color: white; margin-top: 20px;">Silahkan
-                    isi Email dan Password dengan benar.</p>
-            </div>
-        </div>
-    </div>
-</body>
-
-
-<script src="{{ asset('tloginjadi') }}/assets/js/jquery-3.2.1.min.js"></script>
-<script src="{{ asset('tloginjadi') }}/assets/js/popper.min.js"></script>
-<script src="{{ asset('tloginjadi') }}/assets/js/bootstrap.min.js"></script>
-<script src="{{ asset('tloginjadi') }}/assets/js/script.js"></script>
-
-
-</html>
+        </form>
+    </x-auth-card>
+</x-guest-layout>

@@ -3,19 +3,22 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Auth\Authenticatable as AuthenticableTrait;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Carbon\Carbon;
-use App\Models\LogisticRequest;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+
+use Laravel\Passport\HasApiTokens;
+use Laratrust\Contracts\LaratrustUser;
+use Laratrust\Traits\HasRolesAndPermissions;
 
 
-
-
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPasswordContract
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRolesAndPermissions, CanResetPassword, AuthenticableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +26,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'biography', 'last_login_at',
+        'f_name',
+        'username',
+        'phone',
+        'email',
+        'password',
+        'email_verified_at'
     ];
 
     /**
@@ -32,7 +40,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -41,22 +50,23 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'id' => 'integer',
+        'user_id' => 'integer',
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
-    /**
-     * Set the last_login_at attribute.
-     *
-     * @param  mixed  $value
-     * @return void
-     */
-    public function setLastLoginAtAttribute($value)
+    public function orderss()
     {
-        $this->attributes['last_login_at'] = Carbon::parse($value);
+        return $this->hasMany(Order::class, 'user_id');
     }
 
-    public function logisticrequest()
+    public function role()
     {
-        return $this->hasMany(LogisticRequest::class, 'id_user', 'id');
+        return $this->hasMany(Role::class, 'user_id');
     }
+    // public function users()
+    // {
+    //     return $this->belongsTo(Order::class,'user_id', 'id');
+    // }
 }
